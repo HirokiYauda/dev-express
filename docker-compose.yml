@@ -1,0 +1,16 @@
+version: '3'
+volumes:
+  node-modules:
+services:
+  app:
+    build: .
+    container_name: dev_express
+    environment:
+      - DEBUG=app:*
+    tty: true
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/app
+      - node-modules:/app/node_modules
+    working_dir: /app
