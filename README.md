@@ -19,6 +19,44 @@ Nuxtのミドルウェアとして、Expressを動作させることもできる
 ホットリロードが正式に実行可能になれば、将来的には、こちらが推奨される環境構築になるはず。
 ```
 
+## Sequelize ORM
+### Sequelize CLI
+```bash
+# sequelizeプロジェクト初期化
+# config, models, migrations, seeders ディレクトリ と 最低限必要なファイルの生成
+# ./config/config.json に、DB接続情報
+npx sequelize init
+
+
+# Model, Migration生成
+# nameは単数。実際のテーブルは複数名で生成
+npx sequelize model:generate --name User --attributes name:string,age:integer
+
+# migration実行
+npx sequelize db:migrate
+
+# migrateを一つ前に戻す
+npx sequelize db:migrate:undo
+
+# migrateを全て元に戻す
+npx sequelize db:migrate:undo:all
+
+# seeder生成
+npx sequelize seed:generate --name UserSeeder
+
+# 全てのseeder実行
+npx sequelize db:seed:all
+
+# DBから全テーブルのデータ削除
+# オートインクリメントはリセットされない。
+# リセットさせるなら、マイグレーションリセットして、シーダー実行 or 直接DB操作
+npx sequelize db:seed:undo:all
+```
+### 補足
+- pacake.jsonで管理したいので、ローカルインストール
+- 環境パスを通していないので、CLIは、npx経由で実行
+- DB情報のDB_HOSTは、dockerのコンテナ名を指定
+
 ## Build Setup
 
 ```bash
