@@ -3,20 +3,29 @@ const { loadNuxt, build } = require('nuxt')
 const app = require('express')()
 const isDev = process.env.NODE_ENV !== 'production'
 const port = process.env.PORT || 3000
-require('dotenv').config()
+const env = process.env.NODE_ENV || 'development'
+const config = require(__dirname + '/../config/config.json')[env]
+const db = require('../models')
 
 async function start() {
-  const mysql = require('mysql2');
-  const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
+  // mysql接続ドライバで、クエリを取得するとき
+  // const mysql = require('mysql2');
+  // const connection = mysql.createConnection({
+  //   host: config.host,
+  //   user: config.username,
+  //   password: config.password,
+  //   database: config.database
+  // });
+  // connection.query('select * from users;', function(err, users) {
+  //   console.log(users);
+  // });
+
+  // sequelize ORM で、Usersテーブル取得
+  db.User.findAll().then(users => {
+    console.log(users[0].name);
   });
 
-  connection.query('select * from users;', function(err, users) {
-    console.log(users);
-  });
+  
 
   return;
 
