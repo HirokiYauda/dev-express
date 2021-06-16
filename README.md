@@ -11,12 +11,82 @@ yarn dev
 yarn dev-serve
 ```
 
-## Expressのミドルウェアとしてnuxtを実行させる理由
+## Express
+### Expressのミドルウェアとしてnuxtを実行させる理由
 ```bash
 Nuxtのミドルウェアとして、Expressを動作させることもできるが、サーバー側の自動実行を動作させる文献が少なく、実装が難しい。
 また動作させられたとしてもnodemonを使った記述になると予想され、利点が見つからないため実装を見送った。
 「nuxt の serverMiddlewareプロパティ」で実装は可能。
 ホットリロードが正式に実行可能になれば、将来的には、こちらが推奨される環境構築になるはず。
+```
+
+### Expressにおけるミドルウェアとは
+- リクエスト / レスポンスを受け取った関数
+
+### Expressの基本
+- routeメソッドは、引数にコールバックを複数記述することで、順々に処理される
+- 次のcallbackへ移行するには、「next()」を使用する
+- レスポンスを終了させるには、明示的に終了を行う「res.end()」やそれが含まれるメソッドを使用する
+- ルーティングのpathは、正規表現なども使用可能
+- ルーティングのコールバックは、配列で複数指定可能
+
+### ルーティング
+```bash
+# GETメソッド
+app.get(path, callback, callback)
+# POSTメソッド
+app.post(path, callback, callback)
+# 全てのHTTPメソッド
+app.post(path, callback, callback)
+# 全てのHTTPメソッド | allとの違いは、処理順に実行される？
+app.use(path, callback, callback)
+# 一つのパスに対して、HTTPメソッドをグルーピング
+app.route(path).get(callback).post(callback)
+```
+
+### コールバックの引数
+```bash
+function (req, res, next) {
+  res.send('hello world')
+}
+※ req リクエスト
+※ res レスポンス
+※ next 次のコールバックへ移行するメソッド
+```
+
+### express.Router
+```bash
+ルーティングのモジュール化を行うことができる。
+
+下記のように、birdに対するリクエスト受け取ると、実行されるファイルがあるとします。 
+-----------------------------------
+[ app.js ]
+var birds = require('./birds')
+// ルーター・モジュールをアプリケーションにロード
+app.use('/birds', birds)
+ 
+[ bird.js ]
+var express = require('express')
+var router = express.Router()
+
+// bird で必ず実行される関数
+router.use(function timeLog (req, res, next) {
+  console.log('Time: ', Date.now())
+  next()
+})
+// bird/ で実行される関数 | 上記、一つの関数も実行
+router.get('/', function (req, res) {
+  res.send('Birds home page')
+})
+// bird/about で実行される関数 | 上記、二つの関数も実行
+router.get('/about', function (req, res) {
+  res.send('About birds')
+})
+
+module.exports = router
+-----------------------------------
+
+「express.Router」を使うことで、ルーティングがマッチするものに対して、関数を組み合わせて設計できる
 ```
 
 ## Sequelize ORM
