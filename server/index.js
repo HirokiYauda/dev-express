@@ -5,9 +5,13 @@ const isDev = process.env.NODE_ENV !== 'production'
 const port = process.env.PORT || 3000
 const env = process.env.NODE_ENV || 'development'
 const config = require(__dirname + '/../config/config.json')[env]
-const db = require('../models')
+const db = require('../models');
+const routesApi = require('../routes/api.js');
 
 async function start() {
+  // Api ルーティング
+  app.use('/api', routesApi);
+
   // mysql接続ドライバで、クエリを取得するとき
   // const mysql = require('mysql2');
   // const connection = mysql.createConnection({
@@ -21,14 +25,10 @@ async function start() {
   // });
 
   // sequelize ORM で、Usersテーブル取得
-  db.User.findAll().then(users => {
-    console.log(users[0].name);
-  });
-
+  // db.User.findAll().then(users => {
+  //   console.log(users[0].name);
+  // });
   
-
-  return;
-
   // We get Nuxt instance
   const nuxt = await loadNuxt(isDev ? 'dev' : 'start')
 
